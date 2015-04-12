@@ -1,0 +1,19 @@
+#!/usr/bin/perl
+
+if (!$ARGV[0]){ 
+	print "Will delete all files in specified directory\n";
+	print "Usage:  $0 </path/to/directory>\n";
+	exit(1);
+}
+
+$OUTDIR=$ARGV[0];
+
+opendir(DIR, $OUTDIR) || die ("cant opendir $OUTDIR : $!");
+print "deleting files from $d\n";
+while ($file = readdir(DIR)){
+	if ($file!~/\./){
+		print "unlink $file\n";
+		unlink ("$OUTDIR/$file");
+	}
+}
+closedir(DIR);

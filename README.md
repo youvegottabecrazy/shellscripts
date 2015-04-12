@@ -1,6 +1,11 @@
 # shell scripts 
 Scripts I use to pimp out my shell. #bash4lyf, dawg. 
 
+## bigrm
+
+- Sometimes bash will refuse to rm * if there are too many files in a directory.  This works around that.
+- language: perl
+
 ## hogs
 
 - print current system resource usage.
@@ -11,7 +16,7 @@ Scripts I use to pimp out my shell. #bash4lyf, dawg.
 ## listrepos
 
 - If using ssh/gitolite, connecting via ssh will list the repos the current user has access to. This simple script does that.  There's not much to it. It's barely even a script.
-- language: python.
+- language: python
 
 ## gzmaybe
 
