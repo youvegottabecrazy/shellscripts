@@ -2,15 +2,16 @@
 #--
 # Simple script to list the git repos you have access to if using gitolite  
 # -
-import  time, sys, os
+import  sys, os
 from subprocess import PIPE, Popen
-from pprint import pprint
 
+# set this, or set ENV{'listrepos_repo'}
 connect_string = ''  # something like git@yourserver.com
 
-script_path, script_filename = os.path.split(os.path.realpath(sys.argv[0]))
-
 if '__main__' == __name__:
-    stream = Popen(['ssh', '-T',  connect_string], stdin=PIPE, stdout=PIPE)
+    if os.getenv("listrepos_repo"): cs = os.getenv("listrepos_repo")
+    else: cs = connect_string
+    
+    stream = Popen(['ssh', '-T',  cs], stdin=PIPE, stdout=PIPE)
     rsp = stream.stdout.read().decode('utf-8')
     print(rsp)

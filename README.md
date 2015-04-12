@@ -10,7 +10,7 @@ Scripts I use to pimp out my shell. #bash4lyf, dawg.
 
 ## listrepos
 
-- If using ssh/gitolite, connecting via ssh will list the repos the current user has access to. This simple script does that.  There's not much to it.
+- If using ssh/gitolite, connecting via ssh will list the repos the current user has access to. This simple script does that.  There's not much to it. It's barely even a script.
 - language: python.
 
 ## gzmaybe
