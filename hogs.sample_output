@@ -1,0 +1,77 @@
+
+#################################### UPTIME ####################################
+ 23:55:16 up 3 days, 12:30,  3 users,  load average: 0.24, 0.24, 0.18
+
+############################# PROCESSES USING CPU ##############################
+load	user	size	process	process name
+--------------------------------------------------------------------------------
+4	ygbc	31564	24770	00:32:34 /usr/lib/btsync/btsync-daemon --config /home/ygbc/.sync/config.json  
+2	ygbc	37264	28231	00:17:48 /usr/bin/python /usr/bin/deluged -d -l 
+
+############################## IOSTAT SINCE BOOT ###############################
+Linux 3.13.0-48-generic (ygbc) 	04/11/2015 	_i686_	(2 CPU)
+
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+           2.98    0.12    1.14    2.60    0.00   93.16
+
+Device:            tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
+sda               3.05        38.36        46.92   11668748   14273628
+sdb               5.32       229.82       255.68   69915793   77781716
+sdc               0.09         2.95        18.34     897089    5578072
+sdd               0.78        19.93       145.82    6062887   44360150
+
+
+######################## IOSTAT LAST 2 SECOND INTERVAL #########################
+avg-cpu:  %user   %nice %system %iowait  %steal   %idle
+           1.50    0.00    0.75    1.50    0.00   96.26
+
+Device:            tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtn
+sda               2.00         0.00        12.00          0         24
+sdb               0.00         0.00         0.00          0          0
+sdc               0.00         0.00         0.00          0          0
+sdd               0.00         0.00         0.00          0          0
+
+
+############################ IOTOP (10 ITERATIONS) #############################
+10794 be/4 root        0.00 B/s    0.00 B/s  0.00 %  0.05 % [kworker/u16:2]
+24771 be/4 ygbc          0.00 B/s  305.70 K/s  0.00 %  0.00 % btsync-daemon --config /home/ygbc/.sync/config.json
+ 1508 be/3 root        0.00 B/s   22.82 K/s  0.00 % 13.94 % [jbd2/sdb1-8]
+ 1764 be/4 syslog      7.62 K/s   11.42 K/s  0.00 %  1.37 % rsyslogd [rs:main Q:Reg]
+ 2698 be/4 root        0.00 B/s    3.81 K/s  0.00 %  0.00 % console-kit-daemon --no-daemon
+ 3675 be/4 lightdm     0.00 B/s    7.63 K/s  0.00 %  0.03 % dconf-service
+ 3422 be/4 root        0.00 B/s    7.63 K/s  0.00 %  0.00 % lightdm
+ 3592 be/4 lightdm     0.00 B/s    7.63 K/s  0.00 %  0.00 % unity-greeter
+ 3916 be/4 lightdm     0.00 B/s    0.00 B/s  0.00 %  0.00 % indicator-keyboard-service --use-gtk
+
+#################################### HDPARM ####################################
+
+/dev/sda:
+ Timing buffered disk reads: 168 MB in  3.02 seconds =  55.56 MB/sec
+
+/dev/sdb:
+ Timing buffered disk reads: 248 MB in  3.01 seconds =  82.33 MB/sec
+
+/dev/sdc:
+ Timing buffered disk reads: 238 MB in  3.00 seconds =  79.26 MB/sec
+
+/dev/sdd:
+ Timing buffered disk reads: 248 MB in  3.01 seconds =  82.33 MB/sec
+
+###################################### DF ######################################
+Filesystem          1K-blocks      Used Available Use% Mounted on
+/dev/sda1            74173308  46561124  23867436  67% /
+none                        4         0         4   0% /sys/fs/cgroup
+udev                  1017864         4   1017860   1% /dev
+tmpfs                  206240      2248    203992   2% /run
+none                     5120         0      5120   0% /run/lock
+none                  1031196       308   1030888   1% /run/shm
+none                   102400        44    102356   1% /run/user
+/dev/sdc1           720946208 642931492  78014716  90% /mnt/media
+/dev/sdd1           726668808 572157052 154511756  79% /mnt/backup
+/dev/sdb1           726668840 657236928  69431912  91% /home
+
+########################## NETWORK SPEED (5 seconds) ###########################
+ 15250K .......... .......... .......... .......... ..........  2% 2.66M 2m37s
+ 15200K .......... .......... .......... .......... ..........  2% 4.12M 2m37s
+ 15150K .......... .......... .......... .......... ..........  2% 4.30M 2m37s
+--------------------------------------------------------------------------------

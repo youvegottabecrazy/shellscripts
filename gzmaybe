@@ -1,0 +1,46 @@
+#!/usr/bin/env python
+#---
+# What: gzip or gunzip a file, keep whichever version is smaller.
+# Why?: sometimes gzips are bigger than the uncompressed file
+# But.. Yeah, I know. 
+# How -> gzmaybe <filename> [<filename>...]
+#---
+import sys, os, gzip
+from os.path import isfile, getsize
+
+script_path, script_filename = os.path.split(os.path.realpath(sys.argv[0]))
+
+#-- main
+if '__main__' == __name__:
+    if len(sys.argv) < 2:
+        print("What: gzip or gunzip, keep the smaller file")
+        print("Why?: sometimes gzips are bigger than the original")
+        print("How?: %s <filename1> [<filename2>...]" % script_filename)
+        sys.exit()
+
+    for fn in sys.argv[1:]:
+        if isfile(fn):
+            if fn.split('.')[-1] == 'gz':
+                unzipped_fn = fn.rsplit('.',1)[0]
+                gzipped_fn = fn
+                f_in = gzip.open(gzipped_fn, 'rb')
+                f_out = open(unzipped_fn, 'wb')
+            else:
+                unzipped_fn = fn
+                gzipped_fn = fn  + '.gz'
+                f_in = open(unzipped_fn, 'rb')
+                f_out = gzip.open(gzipped_fn, 'wb')
+            f_out.writelines(f_in)
+            f_out.close()
+            f_in.close()
+
+            output = "%s: size:%s | gzip:%s | kept: " % (fn, getsize(unzipped_fn), getsize(gzipped_fn))
+            if getsize(unzipped_fn) > getsize(gzipped_fn):
+                output += 'gz'
+                os.unlink(unzipped_fn)
+            else:
+                output += 'original'
+                os.unlink(gzipped_fn)
+            print(output)
+        else:
+            print("%s not found." % fn)

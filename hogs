@@ -1,0 +1,154 @@
+#!/usr/bin/perl
+# to avoid sudo prompting for password, add to /etc/sudoers.d/ like so
+#   (replacing USER with username and HOMEDIR )
+#   
+# USER ALL=NOPASSWD: /sbin/hdparm
+# USER ALL=NOPASSWD: /usr/sbin/iotop
+# USER ALL=NOPASSWD: /<path>/hogs
+# -  
+# to help further, alias hogs to "sudo /<path>/hogs"
+#----------- 
+$iostat_interval = 2;
+$iotop_iterations= 10;
+$network_speed_secs = 5;
+
+$| = 1;
+
+#
+# Script to list system hogs to std output
+#
+
+##
+## uptime
+##
+print banner("UPTIME");
+$pid = open( PSHANDLE, "/usr/bin/uptime |" );
+print while (<PSHANDLE>);
+close( PSHANDLE );
+
+
+##
+## Process Table
+##
+print banner("PROCESSES USING CPU");
+print "load\tuser\tsize\tprocess\tprocess name\n";
+print "-" x 80, "\n";
+
+$pid = open( PSHANDLE, "/bin/ps -elf |" );
+while (<PSHANDLE>){
+    chop;
+    @ps_fields = split( ' ', $_ );
+    if ( $ps_fields[5] != 0 ) {
+        print "$ps_fields[5]\t$ps_fields[2]\t$ps_fields[9]\t$ps_fields[3]";
+        print  "\t$ps_fields[13] $ps_fields[14] $ps_fields[15] $ps_fields[16] $ps_fields[17] \n";
+    }
+}
+close( PSHANDLE );
+
+
+##
+## io
+##
+print banner("IOSTAT SINCE BOOT");
+if (-f "/usr/bin/iostat"){
+    $pid = open( PSHANDLE, "/usr/bin/iostat $iostat_interval 2 |" );
+    $iteration = 0;
+    while (<PSHANDLE>){
+        if ($_=~/^avg-cpu/){
+            $iteration++;
+            if ($iteration > 1){
+                print banner("IOSTAT LAST $iostat_interval SECOND INTERVAL");
+            }
+        }
+        print;
+    }
+    close( PSHANDLE );
+}else{
+    print "* iostat not installed\n";
+}
+
+
+##
+##  iotop processes
+##
+
+print banner("IOTOP ($iotop_iterations ITERATIONS)");
+if ( !-f "/usr/sbin/iotop"){
+    print "Not doing iotop because iotop isn't installed.\n";
+}elsif($> != 0 ){
+    print "Not doing iotop because not running as root.\n";
+}else{
+    $pid = open( PSHANDLE, "/usr/sbin/iotop --only --batch --iter=$iotop_iterations -qqq | grep -v '/usr/sbin/iotop' |" );
+    while (<PSHANDLE>){
+        print;
+    }
+    close( PSHANDLE );
+}
+
+##
+##  hd paramters
+##
+print banner("HDPARM");
+if ( !-f "/sbin/hdparm"){
+    print "Not doing hdparm because hdparm isn't installed.\n";
+}elsif($> != 0 ){
+    print "Not doing hdparm because not running as root.\n";
+}else{
+    $pid = open (LIST, "cat /proc/partitions | awk '{print \$4}' | grep sd[a-z] | grep -v [0-9] |");
+    while (<LIST>){
+        chop;
+        $pid = open( PSHANDLE, "/sbin/hdparm -t /dev/$_ |" );
+        while (<PSHANDLE>){
+            print;
+        }
+        close( PSHANDLE );
+    }
+    close( LIST );
+}
+
+
+##
+##  Disk usage
+##
+
+print banner("DF");
+$pid = open( PSHANDLE, "/bin/df |" );
+print while (<PSHANDLE>);
+close( PSHANDLE );
+
+
+##
+##  network speed
+##
+print banner("NETWORK SPEED ($network_speed_secs seconds)");
+$pid = open(PSHANDLE, "timeout $network_speed_secs wget --output-document=/dev/null http://speedtest.wdc01.softlayer.com/downloads/test500.zip 2>&1 |");
+@lines = ['x','x','x'];
+while (<PSHANDLE>){
+    if ($_=~/\%/){
+        $lines[2] = $lines[1];
+        $lines[1] = $lines[0];
+        $lines[0] = $_;
+    }
+}
+foreach $line (@lines){
+    print $line;
+}
+close (PSHANDLE);
+
+
+print "-" x 80, "\n";
+
+
+###################################
+##  Subroutines
+##
+sub banner{
+    my $text = shift;
+    $len = 80 - (length($text) + 2); 
+    $str = "\n" .  '#' x ($len/2) . " $text " .  "#" x ($len/2);
+    while (length($str) < 81){
+        $str.="#";
+    }
+    $str .= "\n";
+    return $str;
+}

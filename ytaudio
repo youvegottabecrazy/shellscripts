@@ -1,0 +1,72 @@
+#!/usr/bin/env python
+# Extract the audio from a youtube video.  Convert to mp3 if desired.
+# Interactive menu.
+# Depends on pafy (which is awesome) and ffmpeg... which is buried down there. 
+# Sorry about that.
+#---
+import sys, os, string, subprocess, pafy
+from pprint import pprint
+
+#-- globals
+script_path, script_filename = os.path.split(os.path.realpath(sys.argv[0]))
+
+#-- Functions
+def check_usage(required_arguments=0):
+    if  len(sys.argv) != required_arguments + 1:
+        print "Download audio streams from youtube videos. Convert to mp3 if desired."
+        print "Usage: %s <youtube url>" % (script_filename)
+        sys.exit()
+
+def prompt_user(q, default=None, choices=None):
+    if default:
+        prompt = "%s [%s]: " % (q, default)
+    else:
+        prompt = "%s: " % q
+    while True:
+        a = raw_input( prompt )
+        if a:
+            if choices:
+                if a in [str (x) for x in choices]:
+                    return a
+            else: return a
+
+        elif default is not None:
+            return default
+
+#-- main
+if '__main__' == __name__:
+    check_usage(required_arguments=1)
+    url = sys.argv[1]
+    video = None
+    try:
+        video = pafy.new(url)
+    except Exception, e:
+        print "Error creating video object: %s " % e
+        print "pprint(video):"
+        pprint(video)
+        print "This video is probably DRM'ed. Sorry pal. Try another version."
+        sys.exit()
+
+    print video.title
+    prompt_text = ""
+    i = 1
+    choices = []
+    for stream in video.audiostreams:
+        prompt_text +="[%s] %s\n" % (i, stream.extension)
+        choices.append(i)
+        i+=1
+
+    stream_number = prompt_user(prompt_text + "Pick one: ", default=1, choices=choices)
+
+    # get a better filename, just in case this one sucks.
+    original_filename = video.audiostreams[int(stream_number) - 1].filename
+    valid_chars = "-_.()'\" %s%s" % (string.ascii_letters, string.digits)
+    ofn = ''.join(c for c in original_filename if c in valid_chars)
+
+    video.audiostreams[int(stream_number) - 1].download(filepath=ofn)
+
+    if prompt_user("\nConvert to mp3?", 'y') == 'y':
+        nfn  = os.path.splitext(ofn)[0] + '.mp3'
+        subprocess.call(["ffmpeg", '-i', ofn, nfn])
+        if prompt_user("\nRemove original file?", 'n') == 'y':
+            os.remove(ofn)
