@@ -23,6 +23,11 @@ Scripts I use to pimp out my shell. #bash4lyf, dawg.
 - gzip or gunzip a list of files, keep whichever version is smaller.
 - language: python
 
+## tree
+
+- Displays Structure of Directory Hierarchy.
+- Not mine.
+
 ## ytaudio
 - Extract the audio from a youtube video.  Convert to mp3 if desired.  Interactive menu.
 - language: python
