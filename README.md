@@ -1,6 +1,10 @@
 # shell scripts 
 Scripts I use to pimp out my shell. #bash4lyf, dawg. 
 
+## aac2mp3
+- Convert one or more AAC/M4A files to MP3.
+- Not mine.
+
 ## bigrm
 
 - Sometimes bash will refuse to rm * if there are too many files in a directory.  This works around that.
