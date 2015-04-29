@@ -2,16 +2,16 @@
 
 if (!$ARGV[0]){ 
 	print "Will delete all files in specified directory\n";
-	print "Usage:  $0 </path/to/directory>\n";
+	print "Usage: $0 </path/to/directory>\n";
 	exit(1);
 }
 
 $OUTDIR=$ARGV[0];
 
 opendir(DIR, $OUTDIR) || die ("cant opendir $OUTDIR : $!");
-print "deleting files from $d\n";
+print "deleting files from $OUTDIR\n";
 while ($file = readdir(DIR)){
-	if ($file!~/\./){
+	if ($file!~/^\./){
 		print "unlink $file\n";
 		unlink ("$OUTDIR/$file");
 	}
